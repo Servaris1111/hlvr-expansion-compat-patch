@@ -13,9 +13,12 @@
 2. Download this repository as a ZIP and extract it.
 3. Double-click `HLVR-Expansion-Patch-Installer.cmd`.
 4. If the official HLFixes installer opens, choose Install or Reinstall.
-5. Launch the expansion from the Half-Life VR Mod folder:
+5. Open your **Half-Life VR Mod** install folder.
+6. Launch the expansion from the batch files created there:
    - `Launch Opposing Force VR.bat`
    - `Launch Blue Shift VR.bat`
+
+Do not launch Opposing Force or Blue Shift VR through Steam's `Change Game` menu. These batch files are required because they start HLVR with the correct expansion folder, client DLL, first map, and expansion-safe audio settings.
 
 ## Manual path install
 
@@ -43,7 +46,7 @@ powershell -ExecutionPolicy Bypass -File .\installer\Install-HLVRExpansionPatch.
 - Installs the Opposing Force proxy DLL and keeps the original as `opfor_stock.dll`.
 - Installs the Blue Shift proxy DLL and keeps the original as `hl_stock.dll`.
 - Forces `vr_use_fmod "0"` for expansion launches so dialogue and music use the normal GoldSrc audio path.
-- Creates expansion launch batch files.
+- Creates `Launch Opposing Force VR.bat` and `Launch Blue Shift VR.bat` in the Half-Life VR Mod folder.
 - Downloads and runs the official HLFixes Windows installer unless HLFixes already appears installed.
 
 ## Backups
