@@ -33,8 +33,8 @@
     "ammo_spore": "ammo_rpgclip",
     "weapon_shockrifle": "weapon_gauss",
     "weapon_shockroach": "weapon_gauss",
-    "weapon_displacer": "weapon_egon",
     "weapon_penguin": "weapon_snark",
+    "weapon_displacer": "stock OpFor, preserved for progression",
     "weapon_grapple": "stock OpFor, preserved for progression"
   },
   "hlfixes": {

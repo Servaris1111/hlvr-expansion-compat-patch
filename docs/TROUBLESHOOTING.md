@@ -30,7 +30,7 @@ Expected fallback examples:
 - `weapon_sniperrifle` -> `weapon_crossbow`
 - `weapon_sporelauncher` -> `weapon_rpg`
 
-The barnacle grapple is intentionally left as the stock Opposing Force weapon because maps can require it for progression.
+The barnacle grapple and Displacer are intentionally left as stock Opposing Force weapons because maps can require them for progression.
 
 ## Opposing Force exits with duplicate cvar errors
 

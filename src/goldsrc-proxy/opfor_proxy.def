@@ -323,7 +323,7 @@ EXPORTS
     weapon_9mmhandgun=opfor_stock.weapon_9mmhandgun
     weapon_crossbow=opfor_stock.weapon_crossbow
     weapon_crowbar=opfor_stock.weapon_crowbar
-    weapon_displacer
+    weapon_displacer=opfor_stock.weapon_displacer
     weapon_eagle
     weapon_egon=opfor_stock.weapon_egon
     weapon_gauss=opfor_stock.weapon_gauss

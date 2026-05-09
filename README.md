@@ -37,10 +37,9 @@ The Steam HLVR client is built around base Half-Life weapons. For better VR hand
 - Sniper rifle -> crossbow
 - Spore launcher -> RPG
 - Shock rifle -> Gauss
-- Displacer -> Egon
 - Penguin -> snark
 
-Matching OpFor ammo pickups are also converted to base Half-Life ammo where possible. The barnacle grapple stays stock because Opposing Force uses it for campaign progression.
+Matching OpFor ammo pickups are also converted to base Half-Life ammo where possible. The barnacle grapple and Displacer stay stock because Opposing Force can use them for campaign progression.
 
 ## Download and Install
 
