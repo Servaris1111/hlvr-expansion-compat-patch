@@ -24,6 +24,7 @@ enginefuncs_t g_forwardEngineFuncs{};
 using GiveFnptrsToDllFn = void(__stdcall*)(enginefuncs_t*, globalvars_t*);
 using GetEntityAPIFn = int (*)(DLL_FUNCTIONS*, int);
 using GetEntityAPI2Fn = int (*)(DLL_FUNCTIONS*, int*);
+using EntityFactoryFn = void (*)(entvars_t*);
 
 bool IsSameCommand(const char* lhs, const char* rhs)
 {
@@ -164,6 +165,25 @@ void PatchFunctionTable(DLL_FUNCTIONS* table)
 		table->pfnClientCommand = ProxyClientCommand;
 	}
 }
+
+void ForwardEntityAs(const char* replacementClassName, entvars_t* pev)
+{
+	if (!replacementClassName || !pev)
+	{
+		return;
+	}
+
+	if (g_engineFuncs.pfnAllocString)
+	{
+		pev->classname = g_engineFuncs.pfnAllocString(replacementClassName);
+	}
+
+	const auto originalFactory = reinterpret_cast<EntityFactoryFn>(GetOriginalProc(replacementClassName));
+	if (originalFactory)
+	{
+		originalFactory(pev);
+	}
+}
 } // namespace
 
 extern "C"
@@ -217,6 +237,28 @@ __declspec(dllexport) int GetEntityAPI2(DLL_FUNCTIONS* functionTable, int* inter
 	}
 	return result;
 }
+
+#ifdef ENABLE_OPFOR_VR_WEAPON_FALLBACKS
+#define HLVR_ENTITY_FALLBACK(exportedName, replacementName) \
+	__declspec(dllexport) void exportedName(entvars_t* pev) { ForwardEntityAs(replacementName, pev); }
+
+HLVR_ENTITY_FALLBACK(ammo_556, "ammo_9mmAR")
+HLVR_ENTITY_FALLBACK(ammo_762, "ammo_crossbow")
+HLVR_ENTITY_FALLBACK(ammo_eagleclip, "ammo_357")
+HLVR_ENTITY_FALLBACK(ammo_spore, "ammo_rpgclip")
+HLVR_ENTITY_FALLBACK(weapon_displacer, "weapon_egon")
+HLVR_ENTITY_FALLBACK(weapon_eagle, "weapon_357")
+HLVR_ENTITY_FALLBACK(weapon_knife, "weapon_crowbar")
+HLVR_ENTITY_FALLBACK(weapon_m249, "weapon_9mmAR")
+HLVR_ENTITY_FALLBACK(weapon_penguin, "weapon_snark")
+HLVR_ENTITY_FALLBACK(weapon_pipewrench, "weapon_crowbar")
+HLVR_ENTITY_FALLBACK(weapon_shockrifle, "weapon_gauss")
+HLVR_ENTITY_FALLBACK(weapon_shockroach, "weapon_gauss")
+HLVR_ENTITY_FALLBACK(weapon_sniperrifle, "weapon_crossbow")
+HLVR_ENTITY_FALLBACK(weapon_sporelauncher, "weapon_rpg")
+
+#undef HLVR_ENTITY_FALLBACK
+#endif
 }
 
 BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, LPVOID)

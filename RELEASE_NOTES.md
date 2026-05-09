@@ -1,3 +1,15 @@
+# v0.1.2
+
+Opposing Force VR weapon fallback release.
+
+## Changed
+
+- Opposing Force-only weapon and ammo pickups now map to base Half-Life weapon classes that the Steam HLVR client can hold and show in its VR HUD.
+- Pipe wrench and knife now fall back to the HLVR crowbar path.
+- Desert Eagle, M249, sniper rifle, spore launcher, shock rifle, displacer, penguin, and matching ammo pickups now use closest HLVR-supported equivalents.
+- Barnacle grapple remains stock Opposing Force behavior to avoid breaking campaign progression.
+- Docs now describe the fallback mappings and explain that HLFixes is optional for this proxy layer.
+
 # v0.1.1
 
 Documentation clarification release.

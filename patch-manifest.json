@@ -1,6 +1,6 @@
 {
   "name": "HLVR Expansion Compat Patch",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "supportedMods": [
     {
       "name": "Half-Life: Opposing Force",
@@ -20,6 +20,23 @@
     }
   ],
   "audioMode": "GoldSrc expansion audio, vr_use_fmod=0",
+  "opposingForceWeaponFallbacks": {
+    "weapon_pipewrench": "weapon_crowbar",
+    "weapon_knife": "weapon_crowbar",
+    "weapon_eagle": "weapon_357",
+    "ammo_eagleclip": "ammo_357",
+    "weapon_m249": "weapon_9mmAR",
+    "ammo_556": "ammo_9mmAR",
+    "weapon_sniperrifle": "weapon_crossbow",
+    "ammo_762": "ammo_crossbow",
+    "weapon_sporelauncher": "weapon_rpg",
+    "ammo_spore": "ammo_rpgclip",
+    "weapon_shockrifle": "weapon_gauss",
+    "weapon_shockroach": "weapon_gauss",
+    "weapon_displacer": "weapon_egon",
+    "weapon_penguin": "weapon_snark",
+    "weapon_grapple": "stock OpFor, preserved for progression"
+  },
   "hlfixes": {
     "officialReleaseApi": "https://api.github.com/repos/IntriguingTiles/HLFixes/releases/latest",
     "asset": "Windows.zip"

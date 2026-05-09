@@ -2,7 +2,7 @@
 
 Installer patch for playing **Half-Life: Opposing Force** and **Half-Life: Blue Shift** through the Steam **Half-Life VR Mod**.
 
-This project packages the compatibility work needed to make the expansions launch through HLVR without breaking the original expansion cutscenes, dialogue, music, and scripted sequences.
+This project packages the compatibility work needed to make the expansions launch through HLVR without breaking the original expansion cutscenes, dialogue, music, and scripted sequences. Opposing Force also gets VR-safe weapon fallbacks for expansion weapons the Steam HLVR client does not natively understand.
 
 ## Important Launch Note
 
@@ -24,7 +24,23 @@ Do **not** use Steam's `Change Game` menu for these expansion VR launches. The b
 - Filters HLVR-only commands that stock expansion DLLs do not understand.
 - Prevents duplicate cvar registration startup failures.
 - Forces expansion audio to use normal GoldSrc audio instead of HLVR FMOD, fixing missing intro music and missing NPC dialogue.
+- Maps unsupported Opposing Force weapon/ammo pickups to base Half-Life weapon classes that the HLVR client can hold and show in its VR HUD.
 - Optionally launches the official HLFixes installer.
+
+## Opposing Force VR Weapon Fallbacks
+
+The Steam HLVR client is built around base Half-Life weapons. For better VR handling, this patch converts several Opposing Force-only pickups into the closest HLVR-supported weapon when they spawn:
+
+- Pipe wrench and knife -> crowbar
+- Desert Eagle -> .357
+- M249 -> MP5/9mm AR
+- Sniper rifle -> crossbow
+- Spore launcher -> RPG
+- Shock rifle -> Gauss
+- Displacer -> Egon
+- Penguin -> snark
+
+Matching OpFor ammo pickups are also converted to base Half-Life ammo where possible. The barnacle grapple stays stock because Opposing Force uses it for campaign progression.
 
 ## Download and Install
 

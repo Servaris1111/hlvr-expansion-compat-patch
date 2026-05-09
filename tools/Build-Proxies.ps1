@@ -32,7 +32,8 @@ function Build-Proxy {
     param(
         [string]$Out,
         [string]$Def,
-        [string]$Source
+        [string]$Source,
+        [string[]]$ExtraDefines = @()
     )
 
     $args = @(
@@ -41,7 +42,7 @@ function Build-Proxy {
         "-DNDEBUG",
         "-DWIN32",
         "-D_WINDOWS"
-    ) + $includes + @(
+    ) + $ExtraDefines + $includes + @(
         "-shared",
         "-static-libgcc",
         "-static-libstdc++",
@@ -58,7 +59,7 @@ function Build-Proxy {
     }
 }
 
-Build-Proxy -Out (Join-Path $Root "bin\opfor\opfor.dll") -Def (Join-Path $Root "src\goldsrc-proxy\opfor_proxy.def") -Source (Join-Path $Root "src\goldsrc-proxy\goldsrc_proxy.cpp")
+Build-Proxy -Out (Join-Path $Root "bin\opfor\opfor.dll") -Def (Join-Path $Root "src\goldsrc-proxy\opfor_proxy.def") -Source (Join-Path $Root "src\goldsrc-proxy\goldsrc_proxy.cpp") -ExtraDefines @("-DENABLE_OPFOR_VR_WEAPON_FALLBACKS")
 Build-Proxy -Out (Join-Path $Root "bin\bshift\hl.dll") -Def (Join-Path $Root "src\goldsrc-proxy\bshift_hl_proxy.def") -Source (Join-Path $Root "src\goldsrc-proxy\bshift_proxy.cpp")
 
 Get-FileHash -Algorithm SHA256 -Path (Join-Path $Root "bin\opfor\opfor.dll"), (Join-Path $Root "bin\bshift\hl.dll")

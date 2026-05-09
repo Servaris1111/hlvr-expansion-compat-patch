@@ -442,3 +442,4 @@ Install-HLFixes
 Write-Info "Done. Launchers are in: $HLVRPath"
 Write-Info "Use Launch Opposing Force VR.bat or Launch Blue Shift VR.bat."
 Write-Info "Do not use Steam's Change Game menu for these VR expansion launches."
+Write-Info "Opposing Force-only weapons are mapped to HLVR-supported base Half-Life weapon paths where possible."

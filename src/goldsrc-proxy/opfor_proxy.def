@@ -7,22 +7,22 @@ EXPORTS
     aiscripted_sequence=opfor_stock.aiscripted_sequence
     ambient_generic=opfor_stock.ambient_generic
     ammo_357=opfor_stock.ammo_357
-    ammo_556=opfor_stock.ammo_556
-    ammo_762=opfor_stock.ammo_762
+    ammo_556
+    ammo_762
     ammo_9mmAR=opfor_stock.ammo_9mmAR
     ammo_9mmbox=opfor_stock.ammo_9mmbox
     ammo_9mmclip=opfor_stock.ammo_9mmclip
     ammo_ARgrenades=opfor_stock.ammo_ARgrenades
     ammo_buckshot=opfor_stock.ammo_buckshot
     ammo_crossbow=opfor_stock.ammo_crossbow
-    ammo_eagleclip=opfor_stock.ammo_eagleclip
+    ammo_eagleclip
     ammo_egonclip=opfor_stock.ammo_egonclip
     ammo_gaussclip=opfor_stock.ammo_gaussclip
     ammo_glockclip=opfor_stock.ammo_glockclip
     ammo_mp5clip=opfor_stock.ammo_mp5clip
     ammo_mp5grenades=opfor_stock.ammo_mp5grenades
     ammo_rpgclip=opfor_stock.ammo_rpgclip
-    ammo_spore=opfor_stock.ammo_spore
+    ammo_spore
     beam=opfor_stock.beam
     bmortar=opfor_stock.bmortar
     bodyque=opfor_stock.bodyque
@@ -323,28 +323,28 @@ EXPORTS
     weapon_9mmhandgun=opfor_stock.weapon_9mmhandgun
     weapon_crossbow=opfor_stock.weapon_crossbow
     weapon_crowbar=opfor_stock.weapon_crowbar
-    weapon_displacer=opfor_stock.weapon_displacer
-    weapon_eagle=opfor_stock.weapon_eagle
+    weapon_displacer
+    weapon_eagle
     weapon_egon=opfor_stock.weapon_egon
     weapon_gauss=opfor_stock.weapon_gauss
     weapon_glock=opfor_stock.weapon_glock
     weapon_grapple=opfor_stock.weapon_grapple
     weapon_handgrenade=opfor_stock.weapon_handgrenade
     weapon_hornetgun=opfor_stock.weapon_hornetgun
-    weapon_knife=opfor_stock.weapon_knife
-    weapon_m249=opfor_stock.weapon_m249
+    weapon_knife
+    weapon_m249
     weapon_mp5=opfor_stock.weapon_mp5
-    weapon_penguin=opfor_stock.weapon_penguin
-    weapon_pipewrench=opfor_stock.weapon_pipewrench
+    weapon_penguin
+    weapon_pipewrench
     weapon_python=opfor_stock.weapon_python
     weapon_rpg=opfor_stock.weapon_rpg
     weapon_satchel=opfor_stock.weapon_satchel
-    weapon_shockrifle=opfor_stock.weapon_shockrifle
-    weapon_shockroach=opfor_stock.weapon_shockroach
+    weapon_shockrifle
+    weapon_shockroach
     weapon_shotgun=opfor_stock.weapon_shotgun
     weapon_snark=opfor_stock.weapon_snark
-    weapon_sniperrifle=opfor_stock.weapon_sniperrifle
-    weapon_sporelauncher=opfor_stock.weapon_sporelauncher
+    weapon_sniperrifle
+    weapon_sporelauncher
     weapon_tripmine=opfor_stock.weapon_tripmine
     weaponbox=opfor_stock.weaponbox
     world_items=opfor_stock.world_items
