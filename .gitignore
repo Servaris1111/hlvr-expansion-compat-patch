@@ -1,0 +1,9 @@
+*.log
+*.tmp
+*.user
+*.suo
+*.pdb
+*.obj
+*.ilk
+_hlvr_expansion_patch_backup/
+release/
