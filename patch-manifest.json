@@ -1,0 +1,27 @@
+{
+  "name": "HLVR Expansion Compat Patch",
+  "version": "0.1.0",
+  "supportedMods": [
+    {
+      "name": "Half-Life: Opposing Force",
+      "gameDir": "gearbox",
+      "launcher": "Launch Opposing Force VR.bat",
+      "proxyDll": "gearbox/dlls/opfor.dll",
+      "stockDll": "gearbox/dlls/opfor_stock.dll",
+      "startMap": "of0a0"
+    },
+    {
+      "name": "Half-Life: Blue Shift",
+      "gameDir": "bshift",
+      "launcher": "Launch Blue Shift VR.bat",
+      "proxyDll": "bshift/dlls/hl.dll",
+      "stockDll": "bshift/dlls/hl_stock.dll",
+      "startMap": "ba_tram1"
+    }
+  ],
+  "audioMode": "GoldSrc expansion audio, vr_use_fmod=0",
+  "hlfixes": {
+    "officialReleaseApi": "https://api.github.com/repos/IntriguingTiles/HLFixes/releases/latest",
+    "asset": "Windows.zip"
+  }
+}
