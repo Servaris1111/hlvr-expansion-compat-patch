@@ -4,6 +4,15 @@ Installer patch for playing **Half-Life: Opposing Force** and **Half-Life: Blue 
 
 This project packages the compatibility work needed to make the expansions launch through HLVR without breaking the original expansion cutscenes, dialogue, music, and scripted sequences.
 
+## Important Launch Note
+
+After installing, launch the expansions with the `.bat` files created in your **Half-Life VR Mod** folder:
+
+- `Launch Opposing Force VR.bat`
+- `Launch Blue Shift VR.bat`
+
+Do **not** use Steam's `Change Game` menu for these expansion VR launches. The batch files apply the correct HLVR client copy, game directory, map, and `vr_use_fmod 0` audio setting.
+
 ## What It Fixes
 
 - Adds Opposing Force and Blue Shift launchers for the Steam Half-Life VR Mod.
@@ -26,7 +35,8 @@ Quick version:
 1. Close Half-Life/HLVR.
 2. Download and extract this repo.
 3. Double-click `HLVR-Expansion-Patch-Installer.cmd`.
-4. Launch from:
+4. Open your **Half-Life VR Mod** install folder.
+5. Launch from one of the generated batch files:
    - `Launch Opposing Force VR.bat`
    - `Launch Blue Shift VR.bat`
 
