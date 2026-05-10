@@ -23,7 +23,9 @@ function Disable-Fmod {
             New-Item -ItemType Directory -Force -Path $backupDir | Out-Null
         }
 
-        Copy-Item -LiteralPath $Path -Destination $BackupPath -Force
+        if (-not (Test-Path -LiteralPath $BackupPath)) {
+            Copy-Item -LiteralPath $Path -Destination $BackupPath -Force
+        }
 
         foreach ($line in Get-Content -LiteralPath $Path) {
             if ($line -match '^\s*vr_use_fmod\s*=') {
@@ -47,6 +49,7 @@ function Disable-Fmod {
 function Restore-FmodConfig {
     if (Test-Path -LiteralPath $BackupPath) {
         Copy-Item -LiteralPath $BackupPath -Destination $Path -Force
+        Remove-Item -LiteralPath $BackupPath -Force
     }
 }
 
