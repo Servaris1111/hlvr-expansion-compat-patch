@@ -26,6 +26,8 @@ Do **not** use Steam's `Change Game` menu for these expansion VR launches. The b
 - Prevents duplicate cvar registration startup failures.
 - Forces expansion audio to use normal GoldSrc audio instead of HLVR FMOD before HLVR initializes sound, fixing missing intro music and missing NPC dialogue.
 - Maps unsupported Opposing Force weapon/ammo pickups to base Half-Life weapon classes that the HLVR client can hold and show in its VR HUD.
+- Repairs a missing or truncated root `hlvr.cfg` so HLVR hand, wrist HUD, and weapon settings are restored if a previous expansion launch left the file damaged.
+- Leaves HLVR client commands available in `autoexec.cfg`; the proxy DLL filters expansion-incompatible commands instead of blanking them with aliases.
 - Optionally launches the official HLFixes installer.
 
 ## Opposing Force VR Weapon Fallbacks
@@ -73,6 +75,7 @@ HLFixes is not redistributed here. The installer downloads and launches the offi
 - `HLVR-Expansion-Patch-Installer.cmd` - double-click installer launcher.
 - `installer/Install-HLVRExpansionPatch.ps1` - main installer.
 - `installer/HLVR-Expansion-AudioGuard.ps1` - helper copied beside the generated launchers so expansion audio disables FMOD before HLVR startup and restores it after exit.
+- `installer/default-hlvr.cfg` - default HLVR mod settings used only to repair a missing or truncated root `hlvr.cfg`.
 - `bin/opfor/opfor.dll` - Opposing Force proxy DLL.
 - `bin/bshift/hl.dll` - Blue Shift proxy DLL.
 - `src/goldsrc-proxy` - proxy source and export definition files.

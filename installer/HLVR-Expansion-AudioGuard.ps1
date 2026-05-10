@@ -14,6 +14,10 @@ param(
 $ErrorActionPreference = "Stop"
 
 function Disable-Fmod {
+    if (Test-Path -LiteralPath $BackupPath) {
+        Copy-Item -LiteralPath $BackupPath -Destination $Path -Force
+    }
+
     $lines = New-Object System.Collections.Generic.List[string]
     $found = $false
 
@@ -23,9 +27,7 @@ function Disable-Fmod {
             New-Item -ItemType Directory -Force -Path $backupDir | Out-Null
         }
 
-        if (-not (Test-Path -LiteralPath $BackupPath)) {
-            Copy-Item -LiteralPath $Path -Destination $BackupPath -Force
-        }
+        Copy-Item -LiteralPath $Path -Destination $BackupPath -Force
 
         foreach ($line in Get-Content -LiteralPath $Path) {
             if ($line -match '^\s*vr_use_fmod\s*=') {

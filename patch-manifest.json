@@ -1,6 +1,6 @@
 {
   "name": "HLVR Expansion Compat Patch",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "supportedMods": [
     {
       "name": "Half-Life: Opposing Force",
@@ -39,6 +39,7 @@
     "*_textscheme.txt",
     "resource client scheme files"
   ],
+  "configRepair": "Repairs missing or truncated root hlvr.cfg with HLVR defaults so hands, wrist HUD, and weapon settings remain available.",
   "opposingForceWeaponFallbacks": {
     "weapon_pipewrench": "weapon_crowbar",
     "weapon_knife": "weapon_crowbar",

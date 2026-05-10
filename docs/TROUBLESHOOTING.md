@@ -36,9 +36,20 @@ The barnacle grapple and Displacer are intentionally left as stock Opposing Forc
 
 ## Hands, wrist HUD, or weapon handling do not look like base HLVR
 
-Install v0.1.4 or newer and relaunch from the generated batch file.
+Install v0.1.5 or newer and relaunch from the generated batch file.
 
 GoldSrc resolves assets from the active game folder first. If `gearbox` or `bshift` still contains stock expansion viewmodels or HUD files, those files can shadow the HLVR hands, weapon models, weapon event scripts, and HUD sprites even when the HLVR `client.dll` is loaded. The v0.1.4 installer overlays the base HLVR client-side assets into both expansion folders.
+
+Also check root `hlvr.cfg` in the Half-Life VR Mod folder. It should be a full config file, not a one-line file. Important entries include:
+
+```text
+vr_hud_mode=2
+vr_gordon_hand_scale=1.0
+vr_weaponscale=1.0
+vr_classic_mode=0
+```
+
+The v0.1.5 installer repairs a missing or truncated `hlvr.cfg` with HLVR defaults. It also removes old empty aliases for `VModEnable`, `vr_wpnanim`, `vr_muzzleflash`, and related HLVR commands from expansion `autoexec.cfg`; those commands are filtered by the proxy DLL instead.
 
 Confirm these files exist and match the base HLVR `valve` folder:
 

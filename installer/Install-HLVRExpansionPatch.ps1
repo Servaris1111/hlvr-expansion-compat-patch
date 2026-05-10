@@ -386,6 +386,28 @@ function Install-AudioGuard {
     Copy-Item -Force -Path $source -Destination $destination
 }
 
+function Repair-HLVRConfigIfNeeded {
+    $path = Join-Path $HLVRPath "hlvr.cfg"
+    $defaultConfig = Join-Path $PSScriptRoot "default-hlvr.cfg"
+    Assert-File $defaultConfig "default HLVR config"
+
+    $needsRepair = $true
+    if (Test-Path $path) {
+        $item = Get-Item -Path $path
+        $raw = Get-Content -Path $path -Raw
+        $needsRepair = $item.Length -lt 512 -or
+            $raw -notmatch '(?m)^vr_hud_mode=' -or
+            $raw -notmatch '(?m)^vr_gordon_hand_scale=' -or
+            $raw -notmatch '(?m)^vr_weaponscale='
+    }
+
+    if ($needsRepair) {
+        Write-Info "Repairing truncated or missing hlvr.cfg with HLVR defaults."
+        Backup-File -Path $path -Root $HLVRPath
+        Copy-Item -Force -Path $defaultConfig -Destination $path
+    }
+}
+
 function Install-ModCommon {
     param(
         [string]$GameDir,
@@ -405,18 +427,7 @@ function Install-ModCommon {
     Install-HLVRClientOverlay -GameDir $GameDir
 
     Set-MarkedBlock -Path (Join-Path $destination "autoexec.cfg") -Lines @(
-        'alias VModEnable ""',
-        'alias vrupd_hmd ""',
-        'alias vrupdctrl ""',
-        'alias vr_flashlight ""',
-        'alias vr_teleporter ""',
-        'alias vr_anlgfire ""',
-        'alias vr_lngjump ""',
-        'alias vr_restartmap ""',
-        'alias vr_wpnanim ""',
-        'alias vr_muzzleflash ""',
-        'alias vrtele ""',
-        'alias vrspeech ""',
+        '// HLVR client commands are filtered in the proxy DLL, not aliased here.',
         'volume "0.8"',
         'MP3Volume "0.8"',
         'bgmvolume "1"',
@@ -509,6 +520,7 @@ $opforPackageDll = Join-Path $PatchRoot "bin\opfor\opfor.dll"
 $bshiftPackageDll = Join-Path $PatchRoot "bin\bshift\hl.dll"
 
 Invoke-PatchAction "Installing expansion audio guard helper" {
+    Repair-HLVRConfigIfNeeded
     Install-AudioGuard
 }
 
@@ -538,4 +550,5 @@ Write-Info "Use Launch Opposing Force VR.bat or Launch Blue Shift VR.bat."
 Write-Info "Do not use Steam's Change Game menu for these VR expansion launches."
 Write-Info "Opposing Force-only weapons are mapped to HLVR-supported base Half-Life weapon paths where possible."
 Write-Info "HLVR hand, weapon, wrist HUD, and client support assets were overlaid into both expansion folders."
+Write-Info "Root hlvr.cfg is checked and repaired if truncated, so HLVR hand and HUD settings remain available."
 Write-Info "Launchers temporarily disable HLVR FMOD before startup, then restore your hlvr.cfg after exit."

@@ -1,3 +1,14 @@
+# v0.1.5
+
+HLVR hands and config repair release.
+
+## Changed
+
+- Installer now repairs a missing or truncated root `hlvr.cfg` using HLVR default mod settings.
+- This restores settings needed for base HLVR behavior, including wrist HUD mode, hand scale, weapon scale, classic-mode state, movement, and weapon handling defaults.
+- Hardened the audio guard so an interrupted launch recovers the previous full config before disabling FMOD again.
+- Removed old empty aliases for HLVR commands from expansion `autoexec.cfg`; the proxy DLL now handles command filtering so commands like `VModEnable`, `vr_wpnanim`, and `vr_muzzleflash` are not blanked on the client side.
+
 # v0.1.4
 
 HLVR client asset overlay release.
