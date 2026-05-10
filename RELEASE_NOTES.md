@@ -1,3 +1,14 @@
+# v0.1.3
+
+Expansion audio guard release.
+
+## Changed
+
+- Generated launchers now set root `hlvr.cfg` to `vr_use_fmod=0` before `hl.exe` starts, so HLVR cannot initialize FMOD before the expansion audio fix applies.
+- Launchers now use `start /wait` and restore the previous `hlvr.cfg` after the game exits.
+- Installer now copies `HLVR-Expansion-AudioGuard.ps1` beside the launchers.
+- Troubleshooting docs now call out `FMOD successfully initialized` as the sign that the setting was applied too late.
+
 # v0.1.2
 
 Opposing Force VR weapon fallback release.

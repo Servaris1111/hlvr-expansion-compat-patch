@@ -11,7 +11,7 @@ After installing, launch the expansions with the `.bat` files created in your **
 - `Launch Opposing Force VR.bat`
 - `Launch Blue Shift VR.bat`
 
-Do **not** use Steam's `Change Game` menu for these expansion VR launches. The batch files apply the correct HLVR client copy, game directory, map, and `vr_use_fmod 0` audio setting.
+Do **not** use Steam's `Change Game` menu for these expansion VR launches. The batch files apply the correct HLVR client copy, game directory, map, and expansion-safe `vr_use_fmod 0` audio setting before HLVR starts.
 
 ## What It Fixes
 
@@ -23,7 +23,7 @@ Do **not** use Steam's `Change Game` menu for these expansion VR launches. The b
   - Blue Shift: `hl.dll` forwards to `hl_stock.dll`.
 - Filters HLVR-only commands that stock expansion DLLs do not understand.
 - Prevents duplicate cvar registration startup failures.
-- Forces expansion audio to use normal GoldSrc audio instead of HLVR FMOD, fixing missing intro music and missing NPC dialogue.
+- Forces expansion audio to use normal GoldSrc audio instead of HLVR FMOD before HLVR initializes sound, fixing missing intro music and missing NPC dialogue.
 - Maps unsupported Opposing Force weapon/ammo pickups to base Half-Life weapon classes that the HLVR client can hold and show in its VR HUD.
 - Optionally launches the official HLFixes installer.
 
@@ -71,6 +71,7 @@ HLFixes is not redistributed here. The installer downloads and launches the offi
 
 - `HLVR-Expansion-Patch-Installer.cmd` - double-click installer launcher.
 - `installer/Install-HLVRExpansionPatch.ps1` - main installer.
+- `installer/HLVR-Expansion-AudioGuard.ps1` - helper copied beside the generated launchers so expansion audio disables FMOD before HLVR startup and restores it after exit.
 - `bin/opfor/opfor.dll` - Opposing Force proxy DLL.
 - `bin/bshift/hl.dll` - Blue Shift proxy DLL.
 - `src/goldsrc-proxy` - proxy source and export definition files.

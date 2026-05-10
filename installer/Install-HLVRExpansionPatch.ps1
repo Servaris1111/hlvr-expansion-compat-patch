@@ -283,17 +283,30 @@ function Install-Launcher {
         "set `"SteamAppId=1908720`"",
         "set `"SteamGameId=1908720`"",
         "set `"SteamOverlayGameId=1908720`"",
+        "set `"HLVR_CFG=%HLVR_DIR%hlvr.cfg`"",
+        "set `"HLVR_CFG_BACKUP=%HLVR_DIR%hlvr.cfg.pre-expansion-vr-audio`"",
+        "set `"AUDIO_GUARD=%HLVR_DIR%HLVR-Expansion-AudioGuard.ps1`"",
         "",
         "copy /Y `"%HLVR_DIR%valve\cl_dlls\client.dll`" `"%HLVR_DIR%$GameDir\cl_dlls\client.dll`" >nul",
         "xcopy `"%HLVR_DIR%valve\actions`" `"%HLVR_DIR%$GameDir\actions\`" /E /I /Y >nul",
         "",
+        "if exist `"%AUDIO_GUARD%`" powershell.exe -NoProfile -ExecutionPolicy Bypass -File `"%AUDIO_GUARD%`" -Mode Disable -Path `"%HLVR_CFG%`" -BackupPath `"%HLVR_CFG_BACKUP%`"",
         "pushd `"%HLVR_DIR%`"",
-        "start `"`" `"%HLVR_DIR%hl.exe`" -steam -game $GameDir -console -condebug +exec autoexec.cfg +vr_use_fmod 0 +map $StartMap",
+        "start /wait `"`" `"%HLVR_DIR%hl.exe`" -steam -game $GameDir -console -condebug +exec autoexec.cfg +vr_use_fmod 0 +map $StartMap +vr_use_fmod 0",
         "popd",
+        "if exist `"%AUDIO_GUARD%`" powershell.exe -NoProfile -ExecutionPolicy Bypass -File `"%AUDIO_GUARD%`" -Mode Restore -Path `"%HLVR_CFG%`" -BackupPath `"%HLVR_CFG_BACKUP%`"",
         "endlocal"
     )
 
     Set-Content -Path $path -Value $content -Encoding ASCII
+}
+
+function Install-AudioGuard {
+    $source = Join-Path $PSScriptRoot "HLVR-Expansion-AudioGuard.ps1"
+    $destination = Join-Path $HLVRPath "HLVR-Expansion-AudioGuard.ps1"
+    Assert-File $source "audio guard helper"
+    Backup-File -Path $destination -Root $HLVRPath
+    Copy-Item -Force -Path $source -Destination $destination
 }
 
 function Install-ModCommon {
@@ -418,6 +431,10 @@ $bshiftSource = Join-Path $HalfLifePath "bshift"
 $opforPackageDll = Join-Path $PatchRoot "bin\opfor\opfor.dll"
 $bshiftPackageDll = Join-Path $PatchRoot "bin\bshift\hl.dll"
 
+Invoke-PatchAction "Installing expansion audio guard helper" {
+    Install-AudioGuard
+}
+
 Invoke-PatchAction "Installing Opposing Force files and HLVR client integration" {
     Install-ModCommon -GameDir "gearbox" -SourceDir $opforSource
     Copy-DirectoryContents -Source (Join-Path $HalfLifePath "gearbox_hd") -Destination (Join-Path $HLVRPath "gearbox_hd")
@@ -443,3 +460,4 @@ Write-Info "Done. Launchers are in: $HLVRPath"
 Write-Info "Use Launch Opposing Force VR.bat or Launch Blue Shift VR.bat."
 Write-Info "Do not use Steam's Change Game menu for these VR expansion launches."
 Write-Info "Opposing Force-only weapons are mapped to HLVR-supported base Half-Life weapon paths where possible."
+Write-Info "Launchers temporarily disable HLVR FMOD before startup, then restore your hlvr.cfg after exit."

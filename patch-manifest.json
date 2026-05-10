@@ -1,6 +1,6 @@
 {
   "name": "HLVR Expansion Compat Patch",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "supportedMods": [
     {
       "name": "Half-Life: Opposing Force",
@@ -19,7 +19,7 @@
       "startMap": "ba_tram1"
     }
   ],
-  "audioMode": "GoldSrc expansion audio, vr_use_fmod=0",
+  "audioMode": "GoldSrc expansion audio with launcher audio guard, vr_use_fmod=0 before HLVR startup",
   "opposingForceWeaponFallbacks": {
     "weapon_pipewrench": "weapon_crowbar",
     "weapon_knife": "weapon_crowbar",

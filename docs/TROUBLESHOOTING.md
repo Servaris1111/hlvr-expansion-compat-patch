@@ -8,6 +8,8 @@ Make sure the launcher includes:
 +vr_use_fmod 0
 ```
 
+If `qconsole.log` says `FMOD successfully initialized` before `execing autoexec.cfg`, the setting was applied too late. Install v0.1.3 or newer and relaunch from the generated batch file. The new launchers temporarily write `vr_use_fmod=0` into root `hlvr.cfg` before `hl.exe` starts, then restore the previous file after you exit.
+
 Also check the expansion config has:
 
 ```text
