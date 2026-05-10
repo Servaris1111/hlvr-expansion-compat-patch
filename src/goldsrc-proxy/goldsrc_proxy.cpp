@@ -139,11 +139,11 @@ float ControllerModelScale()
 	return weaponScale / worldScale;
 }
 
-const char* AnimatedWeaponModel(const char* modelName)
+const char* ControllerSafeWeaponModel(const char* modelName)
 {
-	if (!modelName || !*modelName || !g_engineFuncs.pfnCVarGetFloat || g_engineFuncs.pfnCVarGetFloat("vr_use_animated_weapons") == 0.0f)
+	if (!modelName || !*modelName)
 	{
-		return modelName ? modelName : "";
+		return nullptr;
 	}
 
 	struct Mapping
@@ -153,19 +153,21 @@ const char* AnimatedWeaponModel(const char* modelName)
 	};
 
 	static const Mapping mappings[] = {
-		{"models/v_357.mdl", "models/animov/v_357.mdl"},
-		{"models/v_9mmar.mdl", "models/animov/v_9mmar.mdl"},
-		{"models/v_9mmhandgun.mdl", "models/animov/v_9mmhandgun.mdl"},
-		{"models/v_crossbow.mdl", "models/animov/v_crossbow.mdl"},
-		{"models/v_crowbar.mdl", "models/animov/v_crowbar.mdl"},
-		{"models/v_egon.mdl", "models/animov/v_egon.mdl"},
-		{"models/v_gauss.mdl", "models/animov/v_gauss.mdl"},
-		{"models/v_grenade.mdl", "models/animov/v_grenade.mdl"},
-		{"models/v_rpg.mdl", "models/animov/v_rpg.mdl"},
-		{"models/v_satchel.mdl", "models/animov/v_satchel.mdl"},
-		{"models/v_shotgun.mdl", "models/animov/v_shotgun.mdl"},
-		{"models/v_squeak.mdl", "models/animov/v_squeak.mdl"},
-		{"models/v_tripmine.mdl", "models/animov/v_tripmine.mdl"},
+		{"models/v_357.mdl", "models/w_357.mdl"},
+		{"models/v_9mmar.mdl", "models/w_9mmar.mdl"},
+		{"models/v_9mmhandgun.mdl", "models/w_9mmhandgun.mdl"},
+		{"models/v_crossbow.mdl", "models/w_crossbow.mdl"},
+		{"models/v_crowbar.mdl", "models/w_crowbar.mdl"},
+		{"models/v_egon.mdl", "models/w_egon.mdl"},
+		{"models/v_gauss.mdl", "models/w_gauss.mdl"},
+		{"models/v_grenade.mdl", "models/w_grenade.mdl"},
+		{"models/v_hgun.mdl", "models/w_hgun.mdl"},
+		{"models/v_rpg.mdl", "models/w_rpg.mdl"},
+		{"models/v_satchel.mdl", "models/w_satchel.mdl"},
+		{"models/v_satchel_radio.mdl", "models/p_satchel_radio.mdl"},
+		{"models/v_shotgun.mdl", "models/w_shotgun.mdl"},
+		{"models/v_squeak.mdl", "models/w_squeak.mdl"},
+		{"models/v_tripmine.mdl", "models/p_tripmine.mdl"},
 	};
 
 	for (const Mapping& mapping : mappings)
@@ -176,7 +178,13 @@ const char* AnimatedWeaponModel(const char* modelName)
 		}
 	}
 
-	return modelName;
+	return nullptr;
+}
+
+bool IsControllerSafeWeaponModel(const char* modelName)
+{
+	return modelName
+		&& (_strnicmp(modelName, "models/w_", 9) == 0 || _strnicmp(modelName, "models/p_", 9) == 0);
 }
 
 const char* SelectControllerModel(edict_t* entity, int controllerId)
@@ -189,7 +197,19 @@ const char* SelectControllerModel(edict_t* entity, int controllerId)
 		const char* viewModel = entity ? EngineString(entity->v.viewmodel) : "";
 		if (viewModel && *viewModel && viewModel[0] != '*')
 		{
-			return AnimatedWeaponModel(viewModel);
+			const char* safeWeaponModel = ControllerSafeWeaponModel(viewModel);
+			if (safeWeaponModel)
+			{
+				return safeWeaponModel;
+			}
+
+			const char* playerWeaponModel = entity ? EngineString(entity->v.weaponmodel) : "";
+			if (playerWeaponModel && *playerWeaponModel && playerWeaponModel[0] != '*')
+			{
+				return playerWeaponModel;
+			}
+
+			return viewModel;
 		}
 	}
 
@@ -221,6 +241,11 @@ void SendVRControllerModel(edict_t* entity, bool isLeftHand, const char* modelNa
 	}
 	else if (isHandModel && !isDragging)
 	{
+		sequence = 0;
+	}
+	else if (IsControllerSafeWeaponModel(modelName))
+	{
+		body = 0;
 		sequence = 0;
 	}
 

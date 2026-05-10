@@ -47,6 +47,7 @@ powershell -ExecutionPolicy Bypass -File .\installer\Install-HLVRExpansionPatch.
 - Installs the Opposing Force proxy DLL and keeps the original as `opfor_stock.dll`.
 - Installs the Blue Shift proxy DLL and keeps the original as `hl_stock.dll`.
 - Bridges HLVR controller updates so the expansion proxy sends the hand/held-weapon model data expected by the HLVR client renderer.
+- Uses world/player weapon models for controller-held weapons so first-person `v_*.mdl` arm meshes are not drawn as broken floating arms.
 - Converts unsupported Opposing Force weapon/ammo pickups to base Half-Life classes the HLVR client can hold and display.
 - Installs `HLVR-Expansion-AudioGuard.ps1`, used by the batch launchers to set root `hlvr.cfg` to `vr_use_fmod=0` before HLVR starts, then restore the previous value after the game exits.
 - Forces `vr_use_fmod "0"` for expansion launches so dialogue and music use the normal GoldSrc audio path.

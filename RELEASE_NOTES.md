@@ -1,3 +1,14 @@
+# v0.1.7
+
+Controller-safe held weapon model release.
+
+## Changed
+
+- Held weapons now use controller-safe `w_*.mdl`/`p_*.mdl` models instead of first-person `v_*.mdl` models when the expansion proxy sends HLVR controller model data.
+- This removes baked-in Gordon arm meshes from weapons like the crowbar when they are rendered on the VR controller.
+- Weapon controller model sequences are held at idle for these world/player models to avoid invalid first-person animation sequences.
+- Keeps v0.1.6 controller bridge, v0.1.5 config repair, v0.1.4 client asset overlay, v0.1.3 audio guard, and v0.1.2 Opposing Force weapon fallbacks.
+
 # v0.1.6
 
 HLVR controller bridge release.

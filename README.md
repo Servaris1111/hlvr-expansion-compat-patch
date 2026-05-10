@@ -23,6 +23,7 @@ Do **not** use Steam's `Change Game` menu for these expansion VR launches. The b
   - Opposing Force: `opfor.dll` forwards to `opfor_stock.dll`.
   - Blue Shift: `hl.dll` forwards to `hl_stock.dll`.
 - Bridges HLVR controller model updates by translating `vrupdctrl` and `vr_wpnanim` into the `VRCtrlEnt` messages the HLVR client uses to draw hands and held weapons.
+- Uses controller-safe world/player weapon models for held weapons instead of first-person `v_*.mdl` files that can include baked-in arms.
 - Filters HLVR-only commands that stock expansion DLLs do not understand.
 - Prevents duplicate cvar registration startup failures.
 - Forces expansion audio to use normal GoldSrc audio instead of HLVR FMOD before HLVR initializes sound, fixing missing intro music and missing NPC dialogue.

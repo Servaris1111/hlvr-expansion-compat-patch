@@ -42,6 +42,8 @@ GoldSrc resolves assets from the active game folder first. If `gearbox` or `bshi
 
 The v0.1.6 proxy also registers HLVR's `VRCtrlEnt` message and translates `vrupdctrl`/`vr_wpnanim` into the hand and held-weapon model data that the HLVR client renderer expects. Without that server-side bridge, the client can be in VR but still render no hands.
 
+The v0.1.7 proxy changes held weapons to controller-safe `w_*.mdl`/`p_*.mdl` models. This avoids first-person `v_*.mdl` files such as `v_crowbar.mdl`, which include Gordon arm meshes that look broken when attached to a VR controller.
+
 Also check root `hlvr.cfg` in the Half-Life VR Mod folder. It should be a full config file, not a one-line file. Important entries include:
 
 ```text

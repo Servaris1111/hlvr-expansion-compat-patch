@@ -11,6 +11,8 @@ At runtime the proxy loads the stock DLL, forwards entity exports such as `world
 
 For HLVR controller rendering, the proxy registers `VRCtrlEnt` and translates `vrupdctrl` plus `vr_wpnanim` into the hand and held-weapon model payload expected by the HLVR client. This is the lightweight bridge that lets the expansion stock server DLLs keep their campaign logic while the HLVR client still draws hands.
 
+Held weapons are mapped away from first-person `v_*.mdl` files and toward controller-safe `w_*.mdl` or `p_*.mdl` files where possible. Some HLVR `v_` models include arm meshes, which look wrong when rendered directly at a VR controller pose.
+
 The Opposing Force build also owns selected OpFor-only weapon/ammo exports and reclassifies them as base Half-Life equivalents before calling the stock entity factory. This keeps unsupported expansion pickups on HLVR's known weapon, input, and HUD paths. The barnacle grapple and Displacer are forwarded to stock OpFor because campaign maps can depend on them.
 
 The intercepted commands are:
