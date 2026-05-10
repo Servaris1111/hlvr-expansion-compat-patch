@@ -1,6 +1,6 @@
 {
   "name": "HLVR Expansion Compat Patch",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "supportedMods": [
     {
       "name": "Half-Life: Opposing Force",
@@ -39,6 +39,7 @@
     "*_textscheme.txt",
     "resource client scheme files"
   ],
+  "vrControllerBridge": "The proxy registers HLVR's VRCtrlEnt user message and translates vrupdctrl/vr_wpnanim into HLVR hand and held-weapon model updates for Opposing Force and Blue Shift.",
   "configRepair": "Repairs missing or truncated root hlvr.cfg with HLVR defaults so hands, wrist HUD, and weapon settings remain available.",
   "opposingForceWeaponFallbacks": {
     "weapon_pipewrench": "weapon_crowbar",

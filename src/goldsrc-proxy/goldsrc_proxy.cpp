@@ -1,6 +1,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
+#include <cstdlib>
 #include <cstring>
 
 #include "extdll.h"
@@ -20,6 +21,10 @@ globalvars_t* g_globalVars = nullptr;
 DLL_FUNCTIONS g_originalFunctions{};
 bool g_hasOriginalFunctions = false;
 enginefuncs_t g_forwardEngineFuncs{};
+int g_msgVRControllerEnt = 0;
+int g_weaponSequence = 0;
+int g_weaponBody = 0;
+float g_weaponAnimTime = 0.0f;
 
 using GiveFnptrsToDllFn = void(__stdcall*)(enginefuncs_t*, globalvars_t*);
 using GetEntityAPIFn = int (*)(DLL_FUNCTIONS*, int);
@@ -57,6 +62,226 @@ bool IsHLVRClientCommand(const char* command)
 	}
 
 	return false;
+}
+
+float CurrentTime()
+{
+	return g_globalVars ? g_globalVars->time : 0.0f;
+}
+
+void WriteFloat(float value)
+{
+	int bits = 0;
+	static_assert(sizeof(bits) == sizeof(value), "GoldSrc float messages are 32-bit");
+	memcpy(&bits, &value, sizeof(value));
+	g_engineFuncs.pfnWriteLong(bits);
+}
+
+void EnsureVRControllerMessage()
+{
+	if (!g_msgVRControllerEnt && g_engineFuncs.pfnRegUserMsg)
+	{
+		g_msgVRControllerEnt = g_engineFuncs.pfnRegUserMsg("VRCtrlEnt", -1);
+	}
+}
+
+void RegisterHLVRMessages()
+{
+	EnsureVRControllerMessage();
+}
+
+const char* EngineString(string_t value)
+{
+	if (!value || !g_engineFuncs.pfnSzFromIndex)
+	{
+		return "";
+	}
+
+	const char* result = g_engineFuncs.pfnSzFromIndex(value);
+	return result ? result : "";
+}
+
+bool HasSuit(const edict_t* entity)
+{
+	const unsigned int weapons = entity ? static_cast<unsigned int>(entity->v.weapons) : 0;
+	return (weapons & (1u << 31)) != 0;
+}
+
+float CVarFloatOrDefault(const char* name, float fallback)
+{
+	if (!name || !g_engineFuncs.pfnCVarGetFloat)
+	{
+		return fallback;
+	}
+
+	const float value = g_engineFuncs.pfnCVarGetFloat(name);
+	return value == 0.0f ? fallback : value;
+}
+
+float ControllerModelScale()
+{
+	float weaponScale = CVarFloatOrDefault("vr_weaponscale", 1.0f);
+	if (weaponScale < 0.01f)
+	{
+		weaponScale = 1.0f;
+	}
+
+	float worldScale = CVarFloatOrDefault("vr_world_scale", 1.0f);
+	if (worldScale < 0.1f)
+	{
+		worldScale = 0.1f;
+	}
+	else if (worldScale > 100.0f)
+	{
+		worldScale = 100.0f;
+	}
+
+	return weaponScale / worldScale;
+}
+
+const char* AnimatedWeaponModel(const char* modelName)
+{
+	if (!modelName || !*modelName || !g_engineFuncs.pfnCVarGetFloat || g_engineFuncs.pfnCVarGetFloat("vr_use_animated_weapons") == 0.0f)
+	{
+		return modelName ? modelName : "";
+	}
+
+	struct Mapping
+	{
+		const char* from;
+		const char* to;
+	};
+
+	static const Mapping mappings[] = {
+		{"models/v_357.mdl", "models/animov/v_357.mdl"},
+		{"models/v_9mmar.mdl", "models/animov/v_9mmar.mdl"},
+		{"models/v_9mmhandgun.mdl", "models/animov/v_9mmhandgun.mdl"},
+		{"models/v_crossbow.mdl", "models/animov/v_crossbow.mdl"},
+		{"models/v_crowbar.mdl", "models/animov/v_crowbar.mdl"},
+		{"models/v_egon.mdl", "models/animov/v_egon.mdl"},
+		{"models/v_gauss.mdl", "models/animov/v_gauss.mdl"},
+		{"models/v_grenade.mdl", "models/animov/v_grenade.mdl"},
+		{"models/v_rpg.mdl", "models/animov/v_rpg.mdl"},
+		{"models/v_satchel.mdl", "models/animov/v_satchel.mdl"},
+		{"models/v_shotgun.mdl", "models/animov/v_shotgun.mdl"},
+		{"models/v_squeak.mdl", "models/animov/v_squeak.mdl"},
+		{"models/v_tripmine.mdl", "models/animov/v_tripmine.mdl"},
+	};
+
+	for (const Mapping& mapping : mappings)
+	{
+		if (_stricmp(modelName, mapping.from) == 0)
+		{
+			return mapping.to;
+		}
+	}
+
+	return modelName;
+}
+
+const char* SelectControllerModel(edict_t* entity, int controllerId)
+{
+	constexpr int kWeaponController = 0;
+	constexpr int kHandController = 1;
+
+	if (controllerId == kWeaponController)
+	{
+		const char* viewModel = entity ? EngineString(entity->v.viewmodel) : "";
+		if (viewModel && *viewModel && viewModel[0] != '*')
+		{
+			return AnimatedWeaponModel(viewModel);
+		}
+	}
+
+	if (controllerId == kHandController || controllerId == kWeaponController)
+	{
+		return HasSuit(entity) ? "models/v_hand_hevsuit.mdl" : "models/v_hand_labcoat.mdl";
+	}
+
+	return "";
+}
+
+void SendVRControllerModel(edict_t* entity, bool isLeftHand, const char* modelName, int body, int sequence, bool isDragging)
+{
+	if (!entity || !modelName || !*modelName || !g_engineFuncs.pfnMessageBegin)
+	{
+		return;
+	}
+
+	EnsureVRControllerMessage();
+	if (!g_msgVRControllerEnt)
+	{
+		return;
+	}
+
+	const bool isHandModel = _stricmp(modelName, "models/v_hand_hevsuit.mdl") == 0 || _stricmp(modelName, "models/v_hand_labcoat.mdl") == 0;
+	if (isHandModel && isDragging)
+	{
+		sequence = 7; // FULLGRAB_START in HLVR's hand model sequence table.
+	}
+	else if (isHandModel && !isDragging)
+	{
+		sequence = 0;
+	}
+
+	g_engineFuncs.pfnMessageBegin(MSG_ONE, g_msgVRControllerEnt, nullptr, entity);
+	g_engineFuncs.pfnWriteByte(isLeftHand ? 1 : 0);
+	g_engineFuncs.pfnWriteByte(body);
+	g_engineFuncs.pfnWriteByte(0); // skin
+	WriteFloat(ControllerModelScale());
+
+	g_engineFuncs.pfnWriteLong(sequence);
+	WriteFloat(0.0f); // frame
+	WriteFloat(1.0f); // framerate
+	WriteFloat(g_weaponAnimTime > 0.0f ? g_weaponAnimTime : CurrentTime());
+
+	g_engineFuncs.pfnWriteString(modelName);
+	g_engineFuncs.pfnWriteByte(0); // no dragged entity data in the compatibility bridge
+	g_engineFuncs.pfnMessageEnd();
+}
+
+bool HandleVRControllerUpdate(edict_t* entity)
+{
+	if (!g_engineFuncs.pfnCmd_Argc || !g_engineFuncs.pfnCmd_Argv)
+	{
+		return true;
+	}
+
+	if (g_engineFuncs.pfnCmd_Argc() != 16)
+	{
+		return true;
+	}
+
+	const bool isValid = std::atoi(g_engineFuncs.pfnCmd_Argv(2)) != 0;
+	const int controllerId = std::atoi(g_engineFuncs.pfnCmd_Argv(3));
+	const bool isLeftHand = std::atoi(g_engineFuncs.pfnCmd_Argv(4)) != 0;
+	const bool isDragging = std::atoi(g_engineFuncs.pfnCmd_Argv(14)) != 0;
+	if (!isValid)
+	{
+		return true;
+	}
+
+	const char* modelName = SelectControllerModel(entity, controllerId);
+	const int body = controllerId == 0 ? g_weaponBody : 0;
+	const int sequence = controllerId == 0 ? g_weaponSequence : 0;
+	SendVRControllerModel(entity, isLeftHand, modelName, body, sequence, isDragging);
+	return true;
+}
+
+bool HandleVRWeaponAnimation()
+{
+	if (!g_engineFuncs.pfnCmd_Argc || !g_engineFuncs.pfnCmd_Argv)
+	{
+		return true;
+	}
+
+	if (g_engineFuncs.pfnCmd_Argc() >= 3)
+	{
+		g_weaponSequence = std::atoi(g_engineFuncs.pfnCmd_Argv(1));
+		g_weaponBody = std::atoi(g_engineFuncs.pfnCmd_Argv(2));
+		g_weaponAnimTime = CurrentTime();
+	}
+	return true;
 }
 
 bool GetOriginalDllPath(char* buffer, DWORD bufferSize)
@@ -139,6 +364,18 @@ void ProxyClientCommand(edict_t* entity)
 		command = g_engineFuncs.pfnCmd_Argv(0);
 	}
 
+	if (IsSameCommand(command, "vrupdctrl"))
+	{
+		HandleVRControllerUpdate(entity);
+		return;
+	}
+
+	if (IsSameCommand(command, "vr_wpnanim"))
+	{
+		HandleVRWeaponAnimation();
+		return;
+	}
+
 	if (IsHLVRClientCommand(command))
 	{
 		return;
@@ -150,6 +387,16 @@ void ProxyClientCommand(edict_t* entity)
 	}
 }
 
+void ProxyGameInit()
+{
+	if (g_hasOriginalFunctions && g_originalFunctions.pfnGameInit)
+	{
+		g_originalFunctions.pfnGameInit();
+	}
+
+	RegisterHLVRMessages();
+}
+
 void PatchFunctionTable(DLL_FUNCTIONS* table)
 {
 	if (!table)
@@ -159,6 +406,11 @@ void PatchFunctionTable(DLL_FUNCTIONS* table)
 
 	g_originalFunctions = *table;
 	g_hasOriginalFunctions = true;
+
+	if (table->pfnGameInit)
+	{
+		table->pfnGameInit = ProxyGameInit;
+	}
 
 	if (table->pfnClientCommand)
 	{

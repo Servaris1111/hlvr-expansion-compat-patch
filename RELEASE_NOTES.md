@@ -1,3 +1,14 @@
+# v0.1.6
+
+HLVR controller bridge release.
+
+## Changed
+
+- Proxy DLLs now register HLVR's `VRCtrlEnt` user message for Opposing Force and Blue Shift.
+- `vrupdctrl` is translated into HLVR hand/held-weapon model updates instead of being silently swallowed, allowing the HLVR client renderer to draw hands in expansion games.
+- `vr_wpnanim` is tracked by the proxy so held weapon model updates can follow HLVR weapon animation commands.
+- Keeps v0.1.5 config repair, v0.1.4 client asset overlay, v0.1.3 audio guard, and v0.1.2 Opposing Force weapon fallbacks.
+
 # v0.1.5
 
 HLVR hands and config repair release.
