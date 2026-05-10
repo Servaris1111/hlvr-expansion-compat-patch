@@ -154,6 +154,83 @@ function Copy-DirectoryContents {
     Copy-Item -Force -Recurse -Path (Join-Path $Source "*") -Destination $Destination
 }
 
+function Copy-HLVRClientOverlayFile {
+    param(
+        [string]$RelativePath,
+        [string]$DestinationRoot
+    )
+
+    $source = Join-Path $HLVRPath "valve\$RelativePath"
+    if (-not (Test-Path $source)) {
+        return
+    }
+
+    $destination = Join-Path $DestinationRoot $RelativePath
+    New-Item -ItemType Directory -Force -Path (Split-Path $destination -Parent) | Out-Null
+    Backup-File -Path $destination -Root $HLVRPath
+    Copy-Item -Force -Path $source -Destination $destination
+}
+
+function Install-HLVRClientOverlay {
+    param([string]$GameDir)
+
+    $destinationRoot = Join-Path $HLVRPath $GameDir
+    $valveRoot = Join-Path $HLVRPath "valve"
+
+    @(
+        "cl_dlls\client.dll",
+        "cl_dlls\GameUI.dll",
+        "cl_dlls\particleman.dll"
+    ) | ForEach-Object {
+        Copy-HLVRClientOverlayFile -RelativePath $_ -DestinationRoot $destinationRoot
+    }
+
+    Copy-DirectoryContents -Source (Join-Path $valveRoot "actions") -Destination (Join-Path $destinationRoot "actions")
+    Copy-DirectoryContents -Source (Join-Path $valveRoot "fonts") -Destination (Join-Path $destinationRoot "fonts")
+    Copy-DirectoryContents -Source (Join-Path $valveRoot "textures\hud") -Destination (Join-Path $destinationRoot "textures\hud")
+
+    Get-ChildItem -Path (Join-Path $valveRoot "models") -Recurse -File -ErrorAction SilentlyContinue |
+        Where-Object {
+            $_.Name -match '^(v_|p_|w_|vr_hand_).+\.mdl$' -or
+            $_.Name -in @("crossbow_bolt.mdl", "grenade.mdl", "hornet.mdl", "hvr.mdl", "rpgrocket.mdl", "shell.mdl", "shotgunshell.mdl")
+        } |
+        ForEach-Object {
+            $relative = $_.FullName.Substring($valveRoot.Length).TrimStart("\")
+            Copy-HLVRClientOverlayFile -RelativePath $relative -DestinationRoot $destinationRoot
+        }
+
+    Get-ChildItem -Path (Join-Path $valveRoot "sprites") -File -ErrorAction SilentlyContinue |
+        Where-Object {
+            $_.Name -eq "hud.txt" -or
+            $_.Name -eq "crosshairs.spr" -or
+            $_.Name -match '^(320hud|640hud).+\.spr$' -or
+            $_.Name -match '^weapon_.+\.txt$'
+        } |
+        ForEach-Object {
+            $relative = $_.FullName.Substring($valveRoot.Length).TrimStart("\")
+            Copy-HLVRClientOverlayFile -RelativePath $relative -DestinationRoot $destinationRoot
+        }
+
+    Get-ChildItem -Path (Join-Path $valveRoot "events") -Filter "*.sc" -File -ErrorAction SilentlyContinue |
+        ForEach-Object {
+            $relative = $_.FullName.Substring($valveRoot.Length).TrimStart("\")
+            Copy-HLVRClientOverlayFile -RelativePath $relative -DestinationRoot $destinationRoot
+        }
+
+    Get-ChildItem -Path $valveRoot -Filter "*_textscheme.txt" -File -ErrorAction SilentlyContinue |
+        ForEach-Object {
+            Copy-HLVRClientOverlayFile -RelativePath $_.Name -DestinationRoot $destinationRoot
+        }
+
+    @(
+        "resource\ClientScheme.res",
+        "resource\valve_english.txt",
+        "resource\gameui_english.txt"
+    ) | ForEach-Object {
+        Copy-HLVRClientOverlayFile -RelativePath $_ -DestinationRoot $destinationRoot
+    }
+}
+
 function Set-ConfigValue {
     param(
         [string]$Path,
@@ -325,7 +402,7 @@ function Install-ModCommon {
     Backup-File -Path $clientDestination -Root $HLVRPath
     Copy-Item -Force -Path $clientSource -Destination $clientDestination
 
-    Copy-DirectoryContents -Source (Join-Path $HLVRPath "valve\actions") -Destination (Join-Path $destination "actions")
+    Install-HLVRClientOverlay -GameDir $GameDir
 
     Set-MarkedBlock -Path (Join-Path $destination "autoexec.cfg") -Lines @(
         'alias VModEnable ""',
@@ -460,4 +537,5 @@ Write-Info "Done. Launchers are in: $HLVRPath"
 Write-Info "Use Launch Opposing Force VR.bat or Launch Blue Shift VR.bat."
 Write-Info "Do not use Steam's Change Game menu for these VR expansion launches."
 Write-Info "Opposing Force-only weapons are mapped to HLVR-supported base Half-Life weapon paths where possible."
+Write-Info "HLVR hand, weapon, wrist HUD, and client support assets were overlaid into both expansion folders."
 Write-Info "Launchers temporarily disable HLVR FMOD before startup, then restore your hlvr.cfg after exit."

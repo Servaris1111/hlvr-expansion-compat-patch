@@ -1,3 +1,13 @@
+# v0.1.4
+
+HLVR client asset overlay release.
+
+## Changed
+
+- Installer now overlays the base HLVR client-side assets into Opposing Force and Blue Shift after copying expansion content.
+- Adds HLVR hand models, VR viewmodels, base weapon models, `animov` models, weapon event scripts, HUD sprites/textures, fonts, `GameUI.dll`, and `particleman.dll` to each expansion folder.
+- This prevents stock expansion files from shadowing HLVR hands, weapon handling, weapon selection, and wrist HUD assets while keeping expansion maps, sounds, scripts, and server DLLs intact.
+
 # v0.1.3
 
 Expansion audio guard release.

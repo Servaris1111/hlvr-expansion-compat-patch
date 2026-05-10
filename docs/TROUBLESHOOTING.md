@@ -34,6 +34,24 @@ Expected fallback examples:
 
 The barnacle grapple and Displacer are intentionally left as stock Opposing Force weapons because maps can require them for progression.
 
+## Hands, wrist HUD, or weapon handling do not look like base HLVR
+
+Install v0.1.4 or newer and relaunch from the generated batch file.
+
+GoldSrc resolves assets from the active game folder first. If `gearbox` or `bshift` still contains stock expansion viewmodels or HUD files, those files can shadow the HLVR hands, weapon models, weapon event scripts, and HUD sprites even when the HLVR `client.dll` is loaded. The v0.1.4 installer overlays the base HLVR client-side assets into both expansion folders.
+
+Confirm these files exist and match the base HLVR `valve` folder:
+
+```text
+gearbox\models\v_hand_hevsuit.mdl
+gearbox\models\vr_hand_hevsuit.mdl
+gearbox\models\animov\v_crowbar.mdl
+gearbox\sprites\hud.txt
+gearbox\events\crowbar.sc
+bshift\models\v_hand_hevsuit.mdl
+bshift\models\vr_hand_hevsuit.mdl
+```
+
 ## Opposing Force exits with duplicate cvar errors
 
 The proxy DLL should prevent duplicate cvar registration. Confirm these files exist:

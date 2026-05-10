@@ -18,6 +18,7 @@ Do **not** use Steam's `Change Game` menu for these expansion VR launches. The b
 - Adds Opposing Force and Blue Shift launchers for the Steam Half-Life VR Mod.
 - Copies expansion content from a legally installed Steam Half-Life folder into the HLVR folder.
 - Uses the HLVR client DLL for VR rendering/input in both expansions.
+- Overlays HLVR hands, VR viewmodels, base weapon models, weapon event scripts, HUD sprites/textures, fonts, and client support DLLs into both expansion folders so GoldSrc resolves the same client-side assets used by base HLVR.
 - Installs a tiny server-DLL proxy for each expansion:
   - Opposing Force: `opfor.dll` forwards to `opfor_stock.dll`.
   - Blue Shift: `hl.dll` forwards to `hl_stock.dll`.

@@ -43,6 +43,7 @@ powershell -ExecutionPolicy Bypass -File .\installer\Install-HLVRExpansionPatch.
 - Copies `gearbox`, `gearbox_hd`, `bshift`, and `bshift_hd` from the Steam Half-Life folder into the Half-Life VR Mod folder.
 - Copies the HLVR `client.dll` into each expansion `cl_dlls` folder.
 - Copies HLVR action bindings into each expansion.
+- Overlays HLVR hands, VR viewmodels, base weapon models, weapon event scripts, HUD sprites/textures, fonts, `GameUI.dll`, and `particleman.dll` into each expansion so the active game folder uses the same client-side VR assets as base HLVR.
 - Installs the Opposing Force proxy DLL and keeps the original as `opfor_stock.dll`.
 - Installs the Blue Shift proxy DLL and keeps the original as `hl_stock.dll`.
 - Converts unsupported Opposing Force weapon/ammo pickups to base Half-Life classes the HLVR client can hold and display.
